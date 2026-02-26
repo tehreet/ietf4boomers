@@ -1,209 +1,33 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-
-// ── Realistic IETF Mailing List Data ──────────────────────────────────────
-const LISTS = [
-  { id: "tls", name: "TLS", desc: "Transport Layer Security", msgs: 14823, active: true, area: "Security" },
-  { id: "ietf", name: "IETF", desc: "General Discussion", msgs: 89241, active: true, area: "General" },
-  { id: "dnsop", name: "DNSOP", desc: "DNS Operations", msgs: 22156, active: true, area: "Operations" },
-  { id: "httpapi", name: "HTTPAPI", desc: "Building Blocks for HTTP APIs", msgs: 3841, active: true, area: "Applications" },
-  { id: "quic", name: "QUIC", desc: "QUIC Protocol", msgs: 18432, active: true, area: "Transport" },
-  { id: "oauth", name: "OAUTH", desc: "Web Authorization Protocol", msgs: 12567, active: true, area: "Security" },
-  { id: "rats", name: "RATS", desc: "Remote ATtestation procedureS", msgs: 4219, active: true, area: "Security" },
-  { id: "pquip", name: "PQUIP", desc: "Post-Quantum Use in Protocols", msgs: 2841, active: true, area: "Security" },
-  { id: "secdispatch", name: "SECDISPATCH", desc: "Security Dispatch", msgs: 1923, active: true, area: "Security" },
-  { id: "openpgp", name: "OPENPGP", desc: "Open PGP", msgs: 8742, active: true, area: "Security" },
-  { id: "add", name: "ADD", desc: "Adaptive DNS Discovery", msgs: 3156, active: true, area: "Internet" },
-  { id: "dprive", name: "DPRIVE", desc: "DNS PRIVate Exchange", msgs: 5623, active: true, area: "Internet" },
-  { id: "masque", name: "MASQUE", desc: "Multiplexed App Substrate over QUIC Encryption", msgs: 2987, active: true, area: "Transport" },
-  { id: "mls", name: "MLS", desc: "Messaging Layer Security", msgs: 6234, active: true, area: "Security" },
-  { id: "ohai", name: "OHAI", desc: "Oblivious HTTP Application Intermediation", msgs: 1456, active: true, area: "Applications" },
-];
-
-const AREAS = [...new Set(LISTS.map((l) => l.area))].sort();
-
-const people = [
-  { name: "Eric Rescorla", email: "ekr@rtfm.com" },
-  { name: "Martin Thomson", email: "mt@lowentropy.net" },
-  { name: "David Schinazi", email: "dschinazi.ietf@gmail.com" },
-  { name: "Paul Wouters", email: "paul@nohats.ca" },
-  { name: "Salz, Rich", email: "rsalz@akamai.com" },
-  { name: "Stephen Farrell", email: "stephen.farrell@cs.tcd.ie" },
-  { name: "Ben Schwartz", email: "bemasc@google.com" },
-  { name: "Christopher Wood", email: "caw@heapingbits.net" },
-  { name: "Viktor Dukhovni", email: "ietf-dane@dukhovni.org" },
-  { name: "John Mattsson", email: "john.mattsson@ericsson.com" },
-  { name: "DA PIEVE Fabiana", email: "fabiana@isoc.org" },
-  { name: "Watson Ladd", email: "watsonbladd@gmail.com" },
-  { name: "Karthik Bhargavan", email: "karthik.bhargavan@inria.fr" },
-  { name: "Daniel Kahn Gillmor", email: "dkg@fifthhorseman.net" },
-  { name: "Roman Danyliw", email: "rdd@cert.org" },
-  { name: "Murray Kucherawy", email: "superuser@gmail.com" },
-];
-
-function randomPerson() {
-  return people[Math.floor(Math.random() * people.length)];
-}
-
-function randomDate(daysBack = 30) {
-  const d = new Date();
-  d.setDate(d.getDate() - Math.floor(Math.random() * daysBack));
-  d.setHours(
-    Math.floor(Math.random() * 24),
-    Math.floor(Math.random() * 60)
-  );
-  return d;
-}
-
-function generateThreads(listId) {
-  const threadTemplates = {
-    tls: [
-      { subj: "WG Last Call: draft-ietf-tls-mlkem-05 (Ends 2026-02-27)", replies: 14, hot: true },
-      { subj: "Complaint regarding recent TLS chair actions", replies: 31, hot: true },
-      { subj: "Re: Post-quantum key exchange timeline", replies: 8 },
-      { subj: "TLS 1.3 Encrypted Client Hello deployment observations", replies: 19 },
-      { subj: "draft-ietf-tls-esni-22: editorial nits", replies: 3 },
-      { subj: "Certificate Transparency in TLS — implementation survey", replies: 11 },
-      { subj: "Deprecating RSA key exchange in TLS — consensus call", replies: 24, hot: true },
-      { subj: "IETF 125 TLS session scheduling", replies: 5 },
-      { subj: "Re: Hybrid key agreement negotiation", replies: 7 },
-      { subj: "Delegated credentials update — adoption call", replies: 6 },
-    ],
-    ietf: [
-      { subj: "AI slop 'contributions' to IETF working groups", replies: 47, hot: true },
-      { subj: "AI disclosure [was: AI slop 'contributions']", replies: 38, hot: true },
-      { subj: "IETF 125 Final Agenda", replies: 2 },
-      { subj: "List moderator action", replies: 0 },
-      { subj: "Messages from the ietf list for the week ending Feb 22", replies: 0 },
-      { subj: "NomCom 2026 — Call for Volunteers", replies: 12 },
-      { subj: "Side meeting: Open Source in IETF processes", replies: 9 },
-      { subj: "Re: Inclusivity in IETF participation", replies: 15 },
-      { subj: "Proposed changes to meeting fee structure", replies: 22, hot: true },
-      { subj: "Remote participation experience at IETF 124", replies: 7 },
-    ],
-    dnsop: [
-      { subj: "DNS error reporting — operational experience", replies: 11 },
-      { subj: "draft-ietf-dnsop-dnssec-bootstrapping-08 WGLC", replies: 6 },
-      { subj: "ZONEMD deployment tracking", replies: 4 },
-      { subj: "Re: Catalog zones update", replies: 8 },
-      { subj: "Resolver behavior with large responses", replies: 13 },
-      { subj: "Multi-signer DNSSEC — operator feedback needed", replies: 9 },
-      { subj: "DNS over QUIC implementation status", replies: 7 },
-      { subj: "EDNS client subnet privacy concerns", replies: 16, hot: true },
-    ],
-    httpapi: [
-      { subj: "Actual production API with a Deprecation: or Sunset: header?", replies: 6 },
-      { subj: "Link Hint 02 feedback", replies: 4 },
-      { subj: "Weekly github digest (HTTPAPI WG Activity Summary)", replies: 0 },
-      { subj: "api-catalog: well-known URI — Protocol Action", replies: 3 },
-      { subj: "Re: Rate limiting headers standardization", replies: 11 },
-      { subj: "IETF 125 httpapi session request", replies: 1 },
-    ],
-    quic: [
-      { subj: "Multipath QUIC — interop results", replies: 15, hot: true },
-      { subj: "QUIC v2 deployment numbers", replies: 8 },
-      { subj: "Connection migration edge cases", replies: 12 },
-      { subj: "Re: Datagram extension usage patterns", replies: 6 },
-      { subj: "NAT rebinding and QUIC — real-world measurements", replies: 9 },
-      { subj: "0-RTT replay protection mechanisms", replies: 11 },
-    ],
-  };
-
-  const templates = threadTemplates[listId] || [
-    { subj: `[${listId.toUpperCase()}] Weekly digest`, replies: 0 },
-    { subj: `[${listId.toUpperCase()}] New Internet-Draft submitted`, replies: 3 },
-    { subj: `Re: ${listId.toUpperCase()} session at IETF 125`, replies: 5 },
-    { subj: `[${listId.toUpperCase()}] Call for adoption`, replies: 8 },
-    { subj: `[${listId.toUpperCase()}] Charter revision discussion`, replies: 4 },
-  ];
-
-  return templates
-    .map((t, i) => {
-      const starter = randomPerson();
-      const date = randomDate(t.replies > 20 ? 14 : 30);
-      const lastReply = new Date(date);
-      lastReply.setHours(lastReply.getHours() + Math.floor(Math.random() * 72));
-
-      const replyMessages = Array.from({ length: t.replies }, (_, ri) => {
-        const p = randomPerson();
-        const rd = new Date(date);
-        rd.setHours(rd.getHours() + (ri + 1) * (1 + Math.random() * 12));
-        return {
-          id: `${listId}-${i}-r${ri}`,
-          from: p,
-          date: rd,
-          subject: "Re: " + t.subj,
-          body: generateReplyBody(t.subj, p.name, ri),
-          depth: Math.min(Math.floor(ri / 2), 4),
-        };
-      });
-
-      return {
-        id: `${listId}-${i}`,
-        subject: t.subj,
-        from: starter,
-        date,
-        lastActivity:
-          t.replies > 0
-            ? replyMessages[replyMessages.length - 1].date
-            : date,
-        replyCount: t.replies,
-        hot: t.hot || false,
-        list: listId,
-        messages: [
-          {
-            id: `${listId}-${i}-root`,
-            from: starter,
-            date,
-            subject: t.subj,
-            body: generateOriginalBody(t.subj, starter.name, listId),
-            depth: 0,
-          },
-          ...replyMessages,
-        ],
-      };
-    })
-    .sort((a, b) => b.lastActivity - a.lastActivity);
-}
-
-function generateOriginalBody(subject, author, list) {
-  const bodies = [
-    `Hi all,\n\nI'd like to bring up the topic of "${subject}" for discussion on the ${list} list.\n\nAs many of you are aware, there have been ongoing conversations about this in various side channels, and I think it's time we had a proper discussion here where the broader community can weigh in.\n\nThe key points I'd like to address:\n\n1. The current approach has several known limitations that have been documented in the tracker.\n2. We have implementation experience from at least three independent implementations that suggests the proposed changes are viable.\n3. The security considerations need careful review, particularly around the interaction with existing deployed infrastructure.\n\nI've attached a summary of the relevant analysis. Looking forward to hearing the group's thoughts.\n\nBest regards,\n${author}`,
-    `Dear colleagues,\n\nFollowing up on our discussion at IETF 124, I wanted to formally raise this on-list.\n\nThe draft has been updated to address the comments received during the last review cycle. The major changes include:\n\n- Clarified the negotiation mechanism in Section 4.2\n- Added new security considerations for the downgrade scenario\n- Incorporated the error handling feedback from implementers\n\nI believe this is ready for Working Group Last Call. Chairs, could we schedule this?\n\nThanks,\n${author}`,
-    `All,\n\nI've been thinking about this issue and wanted to share some observations from our deployment.\n\nWe've been running a prototype implementation for the past 6 months and have collected data from approximately 50M connections. The results are encouraging but there are some edge cases that the current specification doesn't adequately address.\n\nSpecifically:\n- Middlebox interference is more prevalent than anticipated (~2.3% of connections)\n- The fallback mechanism works as designed but adds measurable latency\n- Interoperability with legacy systems requires careful handling of the version negotiation\n\nI'll present detailed numbers at the next IETF meeting, but wanted to get initial feedback here first.\n\n${author}`,
-  ];
-  return bodies[Math.floor(Math.random() * bodies.length)];
-}
-
-function generateReplyBody(subject, author, index) {
-  const replies = [
-    `I agree with the general direction here, but I have concerns about the backwards compatibility story. Have we considered the impact on existing deployments?\n\nSpecifically, Section 3.1 seems to assume that all implementations will upgrade simultaneously, which doesn't match operational reality.\n\n— ${author}`,
-    `+1 to this approach.\n\nWe've done some preliminary testing and the results look promising. Happy to share our data if it would be useful for the group.\n\n${author}`,
-    `I'm not sure I follow the reasoning in the second point. Could you elaborate on why the existing mechanism is insufficient?\n\nFrom my reading of the current RFC, the behavior described there should already handle this case. What am I missing?\n\nThanks,\n${author}`,
-    `Strong support for moving forward with this. The WG has discussed this extensively and I believe we have rough consensus.\n\nOne minor nit: the IANA considerations section should reference the existing registry rather than creating a new one.\n\n${author}`,
-    `I want to push back on this a bit.\n\nWhile I understand the motivation, the proposed change introduces complexity that may not be justified by the use cases presented. I'd like to see more concrete evidence of the problem before we commit to a solution.\n\nHas anyone done a survey of actual deployment patterns?\n\n${author}`,
-    `Thanks for raising this. A few thoughts:\n\nThe security analysis in Section 7 needs strengthening. As written, it doesn't adequately address the case where an attacker controls the network path. We should at least acknowledge this limitation and provide guidance for implementers.\n\nAlso, the interaction with ${subject.includes("TLS") ? "certificate transparency" : "DNSSEC"} isn't fully specified. This could lead to interoperability issues down the line.\n\n${author}`,
-    `Just to add some data points from our implementation:\n\n- Performance overhead: ~0.3ms per operation (measured on commodity hardware)\n- Memory footprint: negligible increase over baseline\n- Code complexity: approximately 200 additional lines in our C implementation\n\nIMO the overhead is acceptable given the security benefits.\n\n${author}`,
-  ];
-  return replies[index % replies.length];
-}
+import { useSearchParams, useRouter } from "next/navigation";
+import { useLists } from "@/hooks/useLists";
+import { useThreads } from "@/hooks/useThreads";
+import { useThreadMessages } from "@/hooks/useThreadMessages";
+import { useSearch } from "@/hooks/useSearch";
+import { ListSkeleton, ThreadSkeleton, MessageSkeleton } from "./LoadingStates";
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function formatDate(d) {
+  const date = typeof d === "string" ? new Date(d) : d;
+  if (isNaN(date)) return d || "";
   const now = new Date();
-  const diff = now - d;
+  const diff = now - date;
   const mins = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
   if (mins < 60) return `${mins}m ago`;
   if (hours < 24) return `${hours}h ago`;
   if (days < 7) return `${days}d ago`;
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 function formatFullDate(d) {
-  return d.toLocaleDateString("en-US", {
+  if (!d) return "";
+  const date = typeof d === "string" ? new Date(d) : d;
+  if (isNaN(date)) return d || "";
+  return date.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -215,6 +39,7 @@ function formatFullDate(d) {
 }
 
 function initials(name) {
+  if (!name) return "?";
   return name
     .split(/[\s,]+/)
     .filter(Boolean)
@@ -230,6 +55,7 @@ const COLORS = [
 ];
 
 function avatarColor(name) {
+  if (!name) return COLORS[0];
   let hash = 0;
   for (let i = 0; i < name.length; i++)
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -267,46 +93,89 @@ const BackIcon = () => (
 
 // ── Main Component ────────────────────────────────────────────────────────
 export default function ArchiveReader() {
-  const [selectedList, setSelectedList] = useState("tls");
-  const [selectedThread, setSelectedThread] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Data hooks
+  const { lists, areas, loading: listsLoading } = useLists();
+  const [selectedList, setSelectedListRaw] = useState(searchParams.get("list") || "tls");
+  const { threads, loading: threadsLoading } = useThreads(selectedList);
+  const { threadMessages, loading: messagesLoading, loadThread, loadMessageBody, clearMessages } = useThreadMessages(selectedList);
+  const { results: searchResults, searching, query: searchQuery, search: doSearch, clearSearch } = useSearch(selectedList);
+
+  const [selectedThreadId, setSelectedThreadId] = useState(searchParams.get("thread") || null);
+  const [listSearchQuery, setListSearchQuery] = useState("");
   const [areaFilter, setAreaFilter] = useState("All");
   const [threadFilter, setThreadFilter] = useState("recent");
   const [showKbd, setShowKbd] = useState(false);
   const [collapsedMsgs, setCollapsedMsgs] = useState(new Set());
   const [mobileSidebar, setMobileSidebar] = useState(false);
-  const [mobileView, setMobileView] = useState("threads"); // "threads" | "messages"
+  const [mobileView, setMobileView] = useState("threads");
 
-  const threadCache = useRef({});
-  const getThreads = useCallback((listId) => {
-    if (!threadCache.current[listId]) {
-      threadCache.current[listId] = generateThreads(listId);
+  // Derive selectedThread from threads
+  const selectedThread = useMemo(
+    () => threads.find((t) => t.id === selectedThreadId) || null,
+    [threads, selectedThreadId]
+  );
+
+  // Load thread messages when selection changes
+  useEffect(() => {
+    if (selectedThread) {
+      loadThread(selectedThread);
+    } else {
+      clearMessages();
     }
-    return threadCache.current[listId];
-  }, []);
+  }, [selectedThread, loadThread, clearMessages]);
 
-  const threads = useMemo(() => getThreads(selectedList), [selectedList, getThreads]);
+  // Update URL when list/thread changes
+  const setSelectedList = useCallback((listId) => {
+    setSelectedListRaw(listId);
+    setSelectedThreadId(null);
+    clearSearch();
+    router.replace(`/?list=${listId}`, { scroll: false });
+  }, [router, clearSearch]);
+
+  const selectThread = useCallback((threadId) => {
+    setSelectedThreadId(threadId);
+    setCollapsedMsgs(new Set());
+    setMobileView("messages");
+    router.replace(`/?list=${selectedList}&thread=${threadId}`, { scroll: false });
+  }, [router, selectedList]);
 
   const filteredLists = useMemo(() => {
-    let lists = LISTS;
-    if (areaFilter !== "All") lists = lists.filter((l) => l.area === areaFilter);
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      lists = lists.filter(
+    let result = lists;
+    if (areaFilter !== "All") result = result.filter((l) => l.area === areaFilter);
+    if (listSearchQuery) {
+      const q = listSearchQuery.toLowerCase();
+      result = result.filter(
         (l) =>
           l.name.toLowerCase().includes(q) ||
           l.desc.toLowerCase().includes(q)
       );
     }
-    return lists;
-  }, [areaFilter, searchQuery]);
+    return result;
+  }, [lists, areaFilter, listSearchQuery]);
 
   const sortedThreads = useMemo(() => {
     let t = [...threads];
     if (threadFilter === "hot") t = t.filter((th) => th.hot || th.replyCount > 10);
-    if (threadFilter === "recent") t.sort((a, b) => b.lastActivity - a.lastActivity);
+    if (threadFilter === "recent") t.sort((a, b) => b.lastActivity.localeCompare(a.lastActivity));
     return t;
   }, [threads, threadFilter]);
+
+  // Items to show in thread panel: search results or sorted threads
+  const displayThreads = searchQuery ? searchResults.map((r) => ({
+    id: r.threadId || r.hash,
+    subject: r.subject.replace(/^\[[\w-]+\]\s*/, ""),
+    from: { name: r.from },
+    date: r.date,
+    lastActivity: r.date,
+    replyCount: 0,
+    hot: false,
+    list: r.list,
+    rootHash: r.hash,
+    messages: [{ hash: r.hash, subject: r.subject, from: { name: r.from }, date: r.date, depth: r.depth || 0 }],
+  })) : sortedThreads;
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -319,27 +188,26 @@ export default function ArchiveReader() {
       }
       if (e.key === "Escape") {
         if (showKbd) setShowKbd(false);
-        else if (selectedThread) {
-          setSelectedThread(null);
+        else if (selectedThreadId) {
+          setSelectedThreadId(null);
           setMobileView("threads");
+          router.replace(`/?list=${selectedList}`, { scroll: false });
         }
       }
       if (e.key === "j" || e.key === "k") {
         const el = document.activeElement;
         if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA")) return;
         e.preventDefault();
-        const idx = sortedThreads.findIndex((t) => t.id === selectedThread?.id);
+        const idx = displayThreads.findIndex((t) => t.id === selectedThreadId);
         const next = e.key === "j" ? idx + 1 : idx - 1;
-        if (next >= 0 && next < sortedThreads.length) {
-          setSelectedThread(sortedThreads[next]);
-          setCollapsedMsgs(new Set());
-          setMobileView("messages");
+        if (next >= 0 && next < displayThreads.length) {
+          selectThread(displayThreads[next].id);
         }
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [showKbd, selectedThread, sortedThreads]);
+  }, [showKbd, selectedThreadId, displayThreads, selectedList, router, selectThread]);
 
   const toggleMsg = (id) => {
     setCollapsedMsgs((prev) => {
@@ -350,7 +218,10 @@ export default function ArchiveReader() {
     });
   };
 
-  const currentList = LISTS.find((l) => l.id === selectedList);
+  const currentList = lists.find((l) => l.id === selectedList);
+
+  // Messages to render — from threadMessages hook or fallback to selectedThread.messages
+  const displayMessages = threadMessages.length > 0 ? threadMessages : (selectedThread?.messages || []);
 
   return (
     <div className="app">
@@ -379,14 +250,14 @@ export default function ArchiveReader() {
             <input
               type="text"
               placeholder="Filter lists..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={listSearchQuery}
+              onChange={(e) => setListSearchQuery(e.target.value)}
             />
           </div>
         </div>
 
         <div className="area-filters no-select">
-          {["All", ...AREAS].map((a) => (
+          {["All", ...areas].map((a) => (
             <div
               key={a}
               className={`area-chip ${areaFilter === a ? "active" : ""}`}
@@ -398,36 +269,39 @@ export default function ArchiveReader() {
         </div>
 
         <div className="sidebar-lists">
-          {filteredLists.map((list) => (
-            <div
-              key={list.id}
-              className={`list-item ${selectedList === list.id ? "active" : ""}`}
-              onClick={() => {
-                setSelectedList(list.id);
-                setSelectedThread(null);
-                setCollapsedMsgs(new Set());
-                setMobileSidebar(false);
-                setMobileView("threads");
-              }}
-            >
+          {listsLoading ? (
+            <ListSkeleton />
+          ) : (
+            filteredLists.map((list) => (
               <div
-                className="list-item-icon"
-                style={{
-                  background: avatarColor(list.name) + "18",
-                  color: avatarColor(list.name),
+                key={list.id}
+                className={`list-item ${selectedList === list.id ? "active" : ""}`}
+                onClick={() => {
+                  setSelectedList(list.id);
+                  setCollapsedMsgs(new Set());
+                  setMobileSidebar(false);
+                  setMobileView("threads");
                 }}
               >
-                {list.name.slice(0, 3)}
+                <div
+                  className="list-item-icon"
+                  style={{
+                    background: avatarColor(list.name) + "18",
+                    color: avatarColor(list.name),
+                  }}
+                >
+                  {list.name.slice(0, 3)}
+                </div>
+                <div className="list-item-info">
+                  <div className="list-item-name">{list.name}</div>
+                  <div className="list-item-desc">{list.desc}</div>
+                </div>
+                <div className="list-item-count">
+                  {list.msgs > 0 ? `${(list.msgs / 1000).toFixed(1)}k` : ""}
+                </div>
               </div>
-              <div className="list-item-info">
-                <div className="list-item-name">{list.name}</div>
-                <div className="list-item-desc">{list.desc}</div>
-              </div>
-              <div className="list-item-count">
-                {(list.msgs / 1000).toFixed(1)}k
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         <div style={{ padding: "12px 14px", borderTop: "1px solid var(--border-subtle)" }}>
@@ -457,7 +331,18 @@ export default function ArchiveReader() {
         <div className="thread-header">
           <div className="thread-header-left">
             <h2>{currentList?.name || "—"}</h2>
-            <span className="thread-count">{sortedThreads.length} threads</span>
+            <span className="thread-count">
+              {threadsLoading ? "loading..." : `${displayThreads.length} threads`}
+            </span>
+          </div>
+          <div className="search-box" style={{ maxWidth: 180, minWidth: 120, marginLeft: "auto" }}>
+            <SearchIcon />
+            <input
+              type="text"
+              placeholder={`Search ${selectedList}...`}
+              value={searchQuery}
+              onChange={(e) => doSearch(e.target.value)}
+            />
           </div>
         </div>
 
@@ -478,39 +363,43 @@ export default function ArchiveReader() {
         </div>
 
         <div className="thread-list">
-          {sortedThreads.map((thread) => (
-            <div
-              key={thread.id}
-              className={`thread-item ${selectedThread?.id === thread.id ? "active" : ""} ${thread.hot ? "hot" : ""}`}
-              onClick={() => {
-                setSelectedThread(thread);
-                setCollapsedMsgs(new Set());
-                setMobileView("messages");
-              }}
-            >
-              <div className="thread-item-subject">{thread.subject}</div>
-              <div className="thread-item-meta">
-                <span className="thread-item-author">
-                  {thread.from.name.split(",")[0].split(" ")[0]}
-                </span>
-                {thread.hot && (
-                  <span className="thread-item-hot">
-                    <FlameIcon /> hot
-                  </span>
-                )}
-                {thread.replyCount > 0 && (
-                  <span className="thread-item-replies">
-                    <span className={`msg-count-badge ${thread.replyCount > 15 ? "hot-badge" : ""}`}>
-                      {thread.replyCount}
-                    </span>
-                  </span>
-                )}
-                <span className="thread-item-date">
-                  {formatDate(thread.lastActivity)}
-                </span>
-              </div>
+          {threadsLoading || searching ? (
+            <ThreadSkeleton />
+          ) : displayThreads.length === 0 ? (
+            <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--text-tertiary)", fontSize: 13 }}>
+              {searchQuery ? "No results found" : "No threads found"}
             </div>
-          ))}
+          ) : (
+            displayThreads.map((thread) => (
+              <div
+                key={thread.id}
+                className={`thread-item ${selectedThreadId === thread.id ? "active" : ""} ${thread.hot ? "hot" : ""}`}
+                onClick={() => selectThread(thread.id)}
+              >
+                <div className="thread-item-subject">{thread.subject}</div>
+                <div className="thread-item-meta">
+                  <span className="thread-item-author">
+                    {thread.from.name.split(",")[0].split(" ")[0]}
+                  </span>
+                  {thread.hot && (
+                    <span className="thread-item-hot">
+                      <FlameIcon /> hot
+                    </span>
+                  )}
+                  {thread.replyCount > 0 && (
+                    <span className="thread-item-replies">
+                      <span className={`msg-count-badge ${thread.replyCount > 15 ? "hot-badge" : ""}`}>
+                        {thread.replyCount}
+                      </span>
+                    </span>
+                  )}
+                  <span className="thread-item-date">
+                    {formatDate(thread.lastActivity)}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -531,7 +420,7 @@ export default function ArchiveReader() {
         ) : (
           <>
             <div className="mobile-bar">
-              <button onClick={() => { setSelectedThread(null); setMobileView("threads"); }}>
+              <button onClick={() => { setSelectedThreadId(null); setMobileView("threads"); router.replace(`/?list=${selectedList}`, { scroll: false }); }}>
                 <BackIcon />
               </button>
               <span className="mobile-bar-title" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -545,7 +434,7 @@ export default function ArchiveReader() {
                 <span className="message-header-list">
                   {selectedList.toUpperCase()}
                 </span>
-                <span>{selectedThread.messages.length} messages in thread</span>
+                <span>{displayMessages.length} messages in thread</span>
                 <span>·</span>
                 <span>
                   {formatDate(selectedThread.date)} —{" "}
@@ -555,7 +444,7 @@ export default function ArchiveReader() {
                   className="message-header-link"
                   onClick={() =>
                     window.open(
-                      `https://mailarchive.ietf.org/arch/browse/${selectedList}/`,
+                      `https://mailarchive.ietf.org/arch/browse/${selectedList}/?gbt=1`,
                       "_blank"
                     )
                   }
@@ -566,56 +455,76 @@ export default function ArchiveReader() {
             </div>
 
             <div className="message-thread">
-              {selectedThread.messages.map((msg, i) => {
-                const isCollapsed = collapsedMsgs.has(msg.id);
-                const depthClass =
-                  msg.depth > 0
-                    ? `msg-depth msg-depth-${msg.depth}`
-                    : "";
+              {messagesLoading && displayMessages.length === 0 ? (
+                <MessageSkeleton />
+              ) : (
+                displayMessages.map((msg, i) => {
+                  const msgId = msg.hash || msg.id;
+                  const isCollapsed = collapsedMsgs.has(msgId);
+                  const depth = msg.depth || 0;
+                  const depthClass =
+                    depth > 0
+                      ? `msg-depth msg-depth-${Math.min(depth, 4)}`
+                      : "";
 
-                return (
-                  <div
-                    key={msg.id}
-                    className={`msg fade-in ${depthClass}`}
-                    style={{ animationDelay: `${i * 30}ms` }}
-                  >
-                    <div className="msg-header">
-                      <div
-                        className="msg-avatar"
-                        style={{ background: avatarColor(msg.from.name) }}
-                      >
-                        {initials(msg.from.name)}
-                      </div>
-                      <div className="msg-author-info">
-                        <div
-                          className="msg-toggle"
-                          onClick={() => toggleMsg(msg.id)}
-                        >
-                          <ChevronIcon open={!isCollapsed} />
-                          <span className="msg-author">
-                            {msg.from.name}
-                          </span>
-                        </div>
-                        <div className="msg-email">
-                          &lt;{msg.from.email}&gt;
-                        </div>
-                      </div>
-                      <div className="msg-date">
-                        {formatFullDate(msg.date)}
-                      </div>
-                    </div>
+                  return (
                     <div
-                      className={
-                        isCollapsed
-                          ? "msg-body-collapsed"
-                          : "msg-body-expanded"
-                      }
+                      key={msgId}
+                      className={`msg fade-in ${depthClass}`}
+                      style={{ animationDelay: `${i * 30}ms` }}
                     >
-                      <div className="msg-body">{msg.body}</div>
+                      <div className="msg-header">
+                        <div
+                          className="msg-avatar"
+                          style={{ background: avatarColor(msg.from?.name || "") }}
+                        >
+                          {initials(msg.from?.name || "")}
+                        </div>
+                        <div className="msg-author-info">
+                          <div
+                            className="msg-toggle"
+                            onClick={() => {
+                              toggleMsg(msgId);
+                              // Lazy load body if expanding and no body yet
+                              if (isCollapsed && !msg.body && msg.hash) {
+                                loadMessageBody(msg.hash);
+                              }
+                            }}
+                          >
+                            <ChevronIcon open={!isCollapsed} />
+                            <span className="msg-author">
+                              {msg.from?.name || "Unknown"}
+                            </span>
+                          </div>
+                          <div className="msg-email">
+                            {msg.from?.email ? `<${msg.from.email}>` : ""}
+                          </div>
+                        </div>
+                        <div className="msg-date">
+                          {formatFullDate(msg.date)}
+                        </div>
+                      </div>
+                      <div
+                        className={
+                          isCollapsed
+                            ? "msg-body-collapsed"
+                            : "msg-body-expanded"
+                        }
+                      >
+                        <div className="msg-body">
+                          {msg.body ? (
+                            msg.body
+                          ) : (
+                            <span style={{ color: "var(--text-tertiary)", fontStyle: "italic" }}>
+                              Loading message...
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </>
         )}

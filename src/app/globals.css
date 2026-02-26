@@ -590,6 +590,7 @@ kbd {
 
 .fade-in { animation: msgFadeIn 0.2s ease; }
 @keyframes msgFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 /* ── Mobile sidebar toggle ────────────── */
 .mobile-bar {
