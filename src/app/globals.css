@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600;700&display=swap');
-
 :root {
   --bg-deep: #0C0E13;
   --bg-primary: #12151C;
@@ -11,7 +9,7 @@
   --border-subtle: #1F2430;
   --text-primary: #E8ECF4;
   --text-secondary: #8B95A8;
-  --text-tertiary: #5C6478;
+  --text-tertiary: #7B8698;
   --accent: #6C9EFF;
   --accent-dim: #4A7AE0;
   --accent-glow: rgba(108, 158, 255, 0.08);
@@ -19,9 +17,11 @@
   --hot-dim: rgba(255, 107, 74, 0.12);
   --success: #4ADE80;
   --warning: #FBBF24;
-  --font-mono: 'IBM Plex Mono', monospace;
-  --font-serif: 'Source Serif 4', Georgia, serif;
-  --font-sans: 'DM Sans', -apple-system, sans-serif;
+  --depth-1: #4A7AE0;
+  --depth-2: #7B61FF;
+  --depth-3: #E84FA8;
+  --depth-4: #4FE89C;
+  --avatar-text: #FFFFFF;
   --radius: 8px;
   --radius-sm: 5px;
   --transition: 0.15s ease;
@@ -29,7 +29,26 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary); font-family: var(--font-sans); }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button { font: inherit; color: inherit; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary); font-family: var(--font-sans, -apple-system, sans-serif); }
 
 /* ── App Layout ────────────────────────── */
 .app {
@@ -55,7 +74,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .sidebar-logo {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -65,7 +84,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .sidebar-title {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans, -apple-system, sans-serif);
   font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
@@ -99,7 +118,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   border: none;
   outline: none;
   color: var(--text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--font-sans, -apple-system, sans-serif);
   font-size: 13px;
 }
 
@@ -115,7 +134,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .area-chip {
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-radius: 12px;
   font-size: 11px;
   font-weight: 500;
@@ -161,7 +180,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 10px;
   font-weight: 600;
   flex-shrink: 0;
@@ -186,7 +205,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .list-item-count {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 10px;
   color: var(--text-tertiary);
   flex-shrink: 0;
@@ -218,7 +237,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .thread-header h2 {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
@@ -226,7 +245,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .thread-count {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 11px;
   color: var(--text-tertiary);
   background: var(--bg-tertiary);
@@ -242,7 +261,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .thread-filter-btn {
-  padding: 5px 12px;
+  padding: 7px 14px;
   border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 500;
@@ -251,7 +270,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   background: transparent;
   color: var(--text-secondary);
   border: none;
-  font-family: var(--font-sans);
+  font-family: var(--font-sans, -apple-system, sans-serif);
 }
 
 .thread-filter-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
@@ -310,7 +329,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   display: flex;
   align-items: center;
   gap: 3px;
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 10px;
 }
 
@@ -357,7 +376,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .message-header h1 {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans, -apple-system, sans-serif);
   font-size: 20px;
   font-weight: 700;
   color: var(--text-primary);
@@ -376,7 +395,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .message-header-list {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 11px;
   color: var(--accent);
   background: var(--accent-glow);
@@ -413,7 +432,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   transition: background var(--transition);
 }
 
-.msg:hover { background: rgba(255,255,255,0.01); }
+.msg:hover { background: var(--bg-hover); }
 
 .msg-depth {
   border-left: 2px solid var(--border);
@@ -421,10 +440,10 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   padding-left: 16px;
 }
 
-.msg-depth-1 { margin-left: 20px; border-left-color: #4A7AE0; }
-.msg-depth-2 { margin-left: 40px; border-left-color: #7B61FF; }
-.msg-depth-3 { margin-left: 60px; border-left-color: #E84FA8; }
-.msg-depth-4 { margin-left: 80px; border-left-color: #4FE89C; }
+.msg-depth-1 { margin-left: 20px; border-left-color: var(--depth-1); }
+.msg-depth-2 { margin-left: 40px; border-left-color: var(--depth-2); }
+.msg-depth-3 { margin-left: 60px; border-left-color: var(--depth-3); }
+.msg-depth-4 { margin-left: 80px; border-left-color: var(--depth-4); }
 
 .msg-header {
   display: flex;
@@ -440,10 +459,10 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 11px;
   font-weight: 600;
-  color: white;
+  color: var(--avatar-text);
   flex-shrink: 0;
 }
 
@@ -456,7 +475,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .msg-email {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 11px;
   color: var(--text-tertiary);
 }
@@ -468,7 +487,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .msg-body {
-  font-family: var(--font-serif);
+  font-family: var(--font-serif, Georgia, serif);
   font-size: 14.5px;
   line-height: 1.75;
   color: var(--text-secondary);
@@ -477,16 +496,18 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 
 .msg-body-collapsed {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: all 0.25s ease;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
 }
-
 .msg-body-expanded {
-  max-height: 2000px;
-  opacity: 1;
-  transition: all 0.25s ease;
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.2s ease;
+}
+.msg-body-collapsed > .msg-body,
+.msg-body-expanded > .msg-body {
+  overflow: hidden;
 }
 
 .msg-toggle {
@@ -526,7 +547,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
 .kbd-modal h3 {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
@@ -560,7 +581,7 @@ kbd {
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 2px 8px;
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 11px;
   color: var(--text-primary);
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
@@ -569,7 +590,7 @@ kbd {
 .msg-count-badge {
   background: var(--accent);
   color: var(--bg-deep);
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 10px;
   font-weight: 600;
   min-width: 18px;
@@ -613,7 +634,7 @@ kbd {
 }
 
 .mobile-bar-title {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
@@ -629,10 +650,20 @@ kbd {
   .sidebar { display: none; }
   .sidebar.mobile-open { display: flex; position: fixed; inset: 0; z-index: 50; width: 100%; min-width: 100%; }
   .mobile-bar { display: flex; }
+  body:has(.sidebar.mobile-open) { overflow: hidden; }
 }
 
 @media (max-width: 640px) {
   .thread-panel { width: 100%; min-width: 100%; }
   .thread-panel.hidden-mobile { display: none; }
   .message-panel.hidden-mobile { display: none; }
+  .msg-depth-1, .msg-depth-2, .msg-depth-3, .msg-depth-4 { margin-left: 12px; }
+  .msg { padding: 12px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

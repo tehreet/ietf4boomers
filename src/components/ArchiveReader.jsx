@@ -64,31 +64,31 @@ function avatarColor(name) {
 
 // ── SVG Icons ─────────────────────────────────────────────────────────────
 const SearchIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
 );
 const FlameIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c-3.6 0-7-2.4-7-7 0-3.1 2.1-5.7 3.4-7.1.5-.5 1.4-.2 1.4.5 0 1.2.5 2.2 1.4 2.8.3-.8.7-1.8 1.3-2.7C13.8 7.5 15 5 15 2c0-.7.8-1 1.3-.5C18.7 4 21 8 21 11.5c0 6.4-4.4 11.5-9 11.5z" /></svg>
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 23c-3.6 0-7-2.4-7-7 0-3.1 2.1-5.7 3.4-7.1.5-.5 1.4-.2 1.4.5 0 1.2.5 2.2 1.4 2.8.3-.8.7-1.8 1.3-2.7C13.8 7.5 15 5 15 2c0-.7.8-1 1.3-.5C18.7 4 21 8 21 11.5c0 6.4-4.4 11.5-9 11.5z" /></svg>
 );
 const ChevronIcon = ({ open }) => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.15s ease" }}><path d="m9 18 6-6-6-6" /></svg>
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.15s ease" }} aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
 );
 const MailIcon = () => (
-  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
 );
 const ExternalIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>
 );
 const KbdIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="M6 8h.001" /><path d="M10 8h.001" /><path d="M14 8h.001" /><path d="M18 8h.001" /><path d="M8 12h.001" /><path d="M12 12h.001" /><path d="M16 12h.001" /><path d="M7 16h10" /></svg>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="M6 8h.001" /><path d="M10 8h.001" /><path d="M14 8h.001" /><path d="M18 8h.001" /><path d="M8 12h.001" /><path d="M12 12h.001" /><path d="M16 12h.001" /><path d="M7 16h10" /></svg>
 );
 const CloseIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
 );
 const MenuIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
 );
 const BackIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
 );
 
 // ── Main Component ────────────────────────────────────────────────────────
@@ -97,9 +97,9 @@ export default function ArchiveReader() {
   const router = useRouter();
 
   // Data hooks
-  const { lists, areas, loading: listsLoading } = useLists();
+  const { lists, areas, loading: listsLoading, error: listsError } = useLists();
   const [selectedList, setSelectedListRaw] = useState(searchParams.get("list") || "tls");
-  const { threads, loading: threadsLoading } = useThreads(selectedList);
+  const { threads, loading: threadsLoading, error: threadsError, refetch: refetchThreads } = useThreads(selectedList);
   const { threadMessages, loading: messagesLoading, loadThread, loadMessageBody, clearMessages } = useThreadMessages(selectedList);
   const { results: searchResults, searching, query: searchQuery, search: doSearch, clearSearch } = useSearch(selectedList);
 
@@ -111,6 +111,9 @@ export default function ArchiveReader() {
   const [collapsedMsgs, setCollapsedMsgs] = useState(new Set());
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [mobileView, setMobileView] = useState("threads");
+
+  const kbdCloseRef = useRef(null);
+  const kbdTriggerRef = useRef(null);
 
   // Derive selectedThread from threads
   const selectedThread = useMemo(
@@ -209,6 +212,33 @@ export default function ArchiveReader() {
     return () => window.removeEventListener("keydown", handler);
   }, [showKbd, selectedThreadId, displayThreads, selectedList, router, selectThread]);
 
+  // C3 — Modal focus trap
+  useEffect(() => {
+    if (!showKbd) return;
+    const closeBtn = kbdCloseRef.current;
+    if (closeBtn) closeBtn.focus();
+
+    const trap = (e) => {
+      if (e.key !== "Tab") return;
+      const modal = closeBtn?.closest(".kbd-modal");
+      if (!modal) return;
+      const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
+    window.addEventListener("keydown", trap);
+    return () => {
+      window.removeEventListener("keydown", trap);
+      if (kbdTriggerRef.current) kbdTriggerRef.current.focus();
+    };
+  }, [showKbd]);
+
   const toggleMsg = (id) => {
     setCollapsedMsgs((prev) => {
       const next = new Set(prev);
@@ -226,7 +256,7 @@ export default function ArchiveReader() {
   return (
     <div className="app">
       {/* ── Sidebar ── */}
-      <div className={`sidebar ${mobileSidebar ? "mobile-open" : ""}`}>
+      <aside className={`sidebar ${mobileSidebar ? "mobile-open" : ""}`} aria-label="Mailing lists">
         <div className="sidebar-header">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
@@ -236,6 +266,7 @@ export default function ArchiveReader() {
             {mobileSidebar && (
               <button
                 onClick={() => setMobileSidebar(false)}
+                aria-label="Close sidebar"
                 style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: 4 }}
               >
                 <CloseIcon />
@@ -247,7 +278,9 @@ export default function ArchiveReader() {
         <div className="sidebar-search">
           <div className="search-box">
             <SearchIcon />
+            <label className="sr-only" htmlFor="list-search">Filter mailing lists</label>
             <input
+              id="list-search"
               type="text"
               placeholder="Filter lists..."
               value={listSearchQuery}
@@ -258,22 +291,26 @@ export default function ArchiveReader() {
 
         <div className="area-filters no-select">
           {["All", ...areas].map((a) => (
-            <div
+            <button
               key={a}
               className={`area-chip ${areaFilter === a ? "active" : ""}`}
               onClick={() => setAreaFilter(a)}
             >
               {a}
-            </div>
+            </button>
           ))}
         </div>
 
         <div className="sidebar-lists">
           {listsLoading ? (
             <ListSkeleton />
+          ) : listsError ? (
+            <div style={{ padding: "20px 14px", textAlign: "center", color: "var(--text-tertiary)", fontSize: 13 }} role="status">
+              Failed to load lists.
+            </div>
           ) : (
             filteredLists.map((list) => (
-              <div
+              <button
                 key={list.id}
                 className={`list-item ${selectedList === list.id ? "active" : ""}`}
                 onClick={() => {
@@ -282,6 +319,7 @@ export default function ArchiveReader() {
                   setMobileSidebar(false);
                   setMobileView("threads");
                 }}
+                style={{ width: "100%", textAlign: "left", background: "none", border: "none" }}
               >
                 <div
                   className="list-item-icon"
@@ -299,28 +337,30 @@ export default function ArchiveReader() {
                 <div className="list-item-count">
                   {list.msgs > 0 ? `${(list.msgs / 1000).toFixed(1)}k` : ""}
                 </div>
-              </div>
+              </button>
             ))
           )}
         </div>
 
         <div style={{ padding: "12px 14px", borderTop: "1px solid var(--border-subtle)" }}>
-          <div
+          <button
+            ref={kbdTriggerRef}
             style={{
-              display: "flex", alignItems: "center", gap: 8,
+              display: "flex", alignItems: "center", gap: 8, width: "100%",
               color: "var(--text-tertiary)", fontSize: 11, cursor: "pointer",
+              background: "none", border: "none",
             }}
             onClick={() => setShowKbd(true)}
           >
             <KbdIcon />
             <span>Keyboard shortcuts</span>
             <kbd style={{ marginLeft: "auto" }}>?</kbd>
-          </div>
+          </button>
         </div>
-      </div>
+      </aside>
 
       {/* ── Thread Panel ── */}
-      <div className={`thread-panel ${mobileView !== "threads" ? "hidden-mobile" : ""}`}>
+      <section className={`thread-panel ${mobileView !== "threads" ? "hidden-mobile" : ""}`} aria-label="Threads">
         <div className="mobile-bar">
           <button onClick={() => setMobileSidebar(true)}>
             <MenuIcon />
@@ -331,13 +371,15 @@ export default function ArchiveReader() {
         <div className="thread-header">
           <div className="thread-header-left">
             <h2>{currentList?.name || "—"}</h2>
-            <span className="thread-count">
+            <span className="thread-count" aria-live="polite">
               {threadsLoading ? "loading..." : `${displayThreads.length} threads`}
             </span>
           </div>
           <div className="search-box" style={{ maxWidth: 180, minWidth: 120, marginLeft: "auto" }}>
             <SearchIcon />
+            <label className="sr-only" htmlFor="thread-search">Search threads</label>
             <input
+              id="thread-search"
               type="text"
               placeholder={`Search ${selectedList}...`}
               value={searchQuery}
@@ -365,16 +407,27 @@ export default function ArchiveReader() {
         <div className="thread-list">
           {threadsLoading || searching ? (
             <ThreadSkeleton />
+          ) : threadsError && !searchQuery ? (
+            <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--text-tertiary)", fontSize: 13 }} role="status">
+              Failed to load threads.{" "}
+              <button
+                onClick={() => refetchThreads()}
+                style={{ color: "var(--accent)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: 13 }}
+              >
+                Retry
+              </button>
+            </div>
           ) : displayThreads.length === 0 ? (
-            <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--text-tertiary)", fontSize: 13 }}>
+            <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--text-tertiary)", fontSize: 13 }} role="status">
               {searchQuery ? "No results found" : "No threads found"}
             </div>
           ) : (
             displayThreads.map((thread) => (
-              <div
+              <button
                 key={thread.id}
                 className={`thread-item ${selectedThreadId === thread.id ? "active" : ""} ${thread.hot ? "hot" : ""}`}
                 onClick={() => selectThread(thread.id)}
+                style={{ width: "100%", textAlign: "left", background: "none", border: "none" }}
               >
                 <div className="thread-item-subject">{thread.subject}</div>
                 <div className="thread-item-meta">
@@ -397,14 +450,14 @@ export default function ArchiveReader() {
                     {formatDate(thread.lastActivity)}
                   </span>
                 </div>
-              </div>
+              </button>
             ))
           )}
         </div>
-      </div>
+      </section>
 
       {/* ── Message Panel ── */}
-      <div className={`message-panel ${mobileView !== "messages" ? "hidden-mobile" : ""}`}>
+      <main className={`message-panel ${mobileView !== "messages" ? "hidden-mobile" : ""}`}>
         {!selectedThread ? (
           <div className="message-panel-empty">
             <MailIcon />
@@ -440,17 +493,14 @@ export default function ArchiveReader() {
                   {formatDate(selectedThread.date)} —{" "}
                   {formatDate(selectedThread.lastActivity)}
                 </span>
-                <span
+                <a
                   className="message-header-link"
-                  onClick={() =>
-                    window.open(
-                      `https://mailarchive.ietf.org/arch/browse/${selectedList}/?gbt=1`,
-                      "_blank"
-                    )
-                  }
+                  href={`https://mailarchive.ietf.org/arch/browse/${selectedList}/?gbt=1`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   View on IETF <ExternalIcon />
-                </span>
+                </a>
               </div>
             </div>
 
@@ -481,7 +531,7 @@ export default function ArchiveReader() {
                           {initials(msg.from?.name || "")}
                         </div>
                         <div className="msg-author-info">
-                          <div
+                          <button
                             className="msg-toggle"
                             onClick={() => {
                               toggleMsg(msgId);
@@ -490,12 +540,13 @@ export default function ArchiveReader() {
                                 loadMessageBody(msg.hash);
                               }
                             }}
+                            style={{ background: "none", border: "none" }}
                           >
                             <ChevronIcon open={!isCollapsed} />
                             <span className="msg-author">
                               {msg.from?.name || "Unknown"}
                             </span>
-                          </div>
+                          </button>
                           <div className="msg-email">
                             {msg.from?.email ? `<${msg.from.email}>` : ""}
                           </div>
@@ -528,17 +579,28 @@ export default function ArchiveReader() {
             </div>
           </>
         )}
-      </div>
+      </main>
 
       {/* ── Keyboard Shortcuts Modal ── */}
       {showKbd && (
         <div className="kbd-overlay" onClick={() => setShowKbd(false)}>
-          <div className="kbd-modal" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="kbd-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="kbd-title"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h3 style={{ margin: 0 }}>Keyboard Shortcuts</h3>
-              <div style={{ cursor: "pointer", color: "var(--text-tertiary)" }} onClick={() => setShowKbd(false)}>
+              <h3 id="kbd-title" style={{ margin: 0 }}>Keyboard Shortcuts</h3>
+              <button
+                ref={kbdCloseRef}
+                aria-label="Close"
+                onClick={() => setShowKbd(false)}
+                style={{ cursor: "pointer", color: "var(--text-tertiary)", background: "none", border: "none" }}
+              >
                 <CloseIcon />
-              </div>
+              </button>
             </div>
 
             <div className="kbd-section">
