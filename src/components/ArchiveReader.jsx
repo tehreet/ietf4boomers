@@ -285,7 +285,7 @@ export default function ArchiveReader() {
               <button
                 onClick={() => setMobileSidebar(false)}
                 aria-label="Close sidebar"
-                style={{ background: "none", border: "none", color: "var(--text-tertiary)", cursor: "pointer", padding: 4 }}
+                style={{ color: "var(--text-tertiary)", cursor: "pointer", padding: 4 }}
               >
                 <CloseIcon />
               </button>
@@ -337,7 +337,7 @@ export default function ArchiveReader() {
                   setMobileSidebar(false);
                   setMobileView("threads");
                 }}
-                style={{ width: "100%", textAlign: "left", background: "none", border: "none" }}
+                style={{ width: "100%", textAlign: "left" }}
               >
                 <div
                   className="list-item-icon"
@@ -366,7 +366,6 @@ export default function ArchiveReader() {
             style={{
               flex: 1, display: "flex", alignItems: "center", gap: 8,
               color: "var(--text-tertiary)", fontSize: 11, cursor: "pointer",
-              background: "none", border: "none",
             }}
             onClick={() => setShowKbd(true)}
           >
@@ -380,7 +379,7 @@ export default function ArchiveReader() {
             style={{
               display: "flex", alignItems: "center", justifyContent: "center",
               padding: 6, color: "var(--text-tertiary)", cursor: "pointer",
-              background: "none", border: "none", borderRadius: "var(--radius-sm)",
+              borderRadius: "var(--radius-sm)",
             }}
           >
             {theme === "dark" ? <SunIcon /> : <MoonIcon />}
@@ -441,7 +440,7 @@ export default function ArchiveReader() {
               Failed to load threads.{" "}
               <button
                 onClick={() => refetchThreads()}
-                style={{ color: "var(--accent)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: 13 }}
+                style={{ color: "var(--accent)", cursor: "pointer", textDecoration: "underline", fontSize: 13 }}
               >
                 Retry
               </button>
@@ -456,7 +455,7 @@ export default function ArchiveReader() {
                 key={thread.id}
                 className={`thread-item ${selectedThreadId === thread.id ? "active" : ""} ${thread.hot ? "hot" : ""}`}
                 onClick={() => selectThread(thread.id)}
-                style={{ width: "100%", textAlign: "left", background: "none", border: "none" }}
+                style={{ width: "100%", textAlign: "left" }}
               >
                 <div className="thread-item-subject">{thread.subject}</div>
                 <div className="thread-item-meta">
@@ -569,7 +568,6 @@ export default function ArchiveReader() {
                                 loadMessageBody(msg.hash);
                               }
                             }}
-                            style={{ background: "none", border: "none" }}
                           >
                             <ChevronIcon open={!isCollapsed} />
                             <span className="msg-author">
@@ -626,7 +624,7 @@ export default function ArchiveReader() {
                 ref={kbdCloseRef}
                 aria-label="Close"
                 onClick={() => setShowKbd(false)}
-                style={{ cursor: "pointer", color: "var(--text-tertiary)", background: "none", border: "none" }}
+                style={{ cursor: "pointer", color: "var(--text-tertiary)" }}
               >
                 <CloseIcon />
               </button>
