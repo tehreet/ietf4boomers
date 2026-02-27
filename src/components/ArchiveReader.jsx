@@ -276,21 +276,19 @@ export default function ArchiveReader() {
       {/* ── Sidebar ── */}
       <aside className={`sidebar ${mobileSidebar ? "mobile-open" : ""}`} aria-label="Mailing lists">
         <div className="sidebar-header">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <div>
-              <div className="sidebar-logo">IETF</div>
-              <div className="sidebar-title">Mail Archive</div>
-            </div>
-            {mobileSidebar && (
-              <button
-                onClick={() => setMobileSidebar(false)}
-                aria-label="Close sidebar"
-                className="icon-btn"
-              >
-                <CloseIcon />
-              </button>
-            )}
+          <div>
+            <div className="sidebar-logo">IETF</div>
+            <div className="sidebar-title">Mail Archive</div>
           </div>
+          {mobileSidebar && (
+            <button
+              onClick={() => setMobileSidebar(false)}
+              aria-label="Close sidebar"
+              className="icon-btn"
+            >
+              <CloseIcon />
+            </button>
+          )}
         </div>
 
         <div className="sidebar-search">
@@ -367,7 +365,7 @@ export default function ArchiveReader() {
           >
             <KbdIcon />
             <span>Shortcuts</span>
-            <kbd style={{ marginLeft: "auto" }}>?</kbd>
+            <kbd>?</kbd>
           </button>
           <button
             onClick={toggleTheme}
@@ -392,10 +390,10 @@ export default function ArchiveReader() {
           <div className="thread-header-left">
             <h2>{currentList?.name || "—"}</h2>
             <span className="thread-count" aria-live="polite">
-              {threadsLoading ? "loading..." : `${displayThreads.length} threads`}
+              {threadsLoading ? "Loading\u2026" : `${displayThreads.length} threads`}
             </span>
           </div>
-          <div className="search-box" style={{ maxWidth: 180, minWidth: 120, marginLeft: "auto" }}>
+          <div className="search-box thread-search">
             <SearchIcon />
             <label className="sr-only" htmlFor="thread-search">Search threads</label>
             <input
@@ -430,10 +428,7 @@ export default function ArchiveReader() {
           ) : threadsError && !searchQuery ? (
             <div className="status-message" role="status">
               Failed to load threads.{" "}
-              <button
-                onClick={() => refetchThreads()}
-                style={{ color: "var(--accent)", cursor: "pointer", textDecoration: "underline", fontSize: 13 }}
-              >
+              <button onClick={() => refetchThreads()} className="retry-btn">
                 Retry
               </button>
             </div>
@@ -483,7 +478,7 @@ export default function ArchiveReader() {
             <p>
               Select a thread to read
               <br />
-              <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>
+              <span className="empty-hint">
                 Use <kbd>j</kbd> / <kbd>k</kbd> to navigate, <kbd>?</kbd> for
                 shortcuts
               </span>
@@ -539,8 +534,8 @@ export default function ArchiveReader() {
                   return (
                     <div
                       key={msgId}
-                      className={`msg fade-in ${depthClass}`}
-                      style={{ animationDelay: `${i * 30}ms` }}
+                      className={`msg ${i < 8 ? "fade-in" : ""} ${depthClass}`}
+                      style={i < 8 ? { animationDelay: `${i * 30}ms` } : undefined}
                     >
                       <div className="msg-header">
                         <div
@@ -570,7 +565,8 @@ export default function ArchiveReader() {
                           </div>
                         </div>
                         <div className="msg-date">
-                          {formatFullDate(msg.date)}
+                          <span className="msg-date-full">{formatFullDate(msg.date)}</span>
+                          <span className="msg-date-short">{formatDate(msg.date)}</span>
                         </div>
                       </div>
                       <div
@@ -584,7 +580,7 @@ export default function ArchiveReader() {
                           {msg.body ? (
                             msg.body
                           ) : (
-                            <span style={{ color: "var(--text-tertiary)", fontStyle: "italic" }}>
+                            <span className="msg-loading">
                               Loading message...
                             </span>
                           )}

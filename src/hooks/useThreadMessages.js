@@ -5,24 +5,28 @@ export function useThreadMessages(listId) {
   const [threadMessages, setThreadMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const bodyCache = useRef(new Map());
+  const requestIdRef = useRef(0);
 
   const loadThread = useCallback(async (thread) => {
+    // Increment request ID to guard against stale completions
+    const thisRequest = ++requestIdRef.current;
+
     setLoading(true);
     const rootHash = thread.rootHash || thread.messages?.[0]?.hash;
     if (!rootHash) { setLoading(false); return; }
 
     try {
-      // Fetch root message to get thread snippet + body
       const rootRes = await fetch(`/api/messages/${listId}/${rootHash}`);
       const rootData = await rootRes.json();
       bodyCache.current.set(rootHash, rootData);
 
-      // Use threadSnippet if available, else fall back to thread.messages
+      // Stale check: a newer loadThread was called
+      if (thisRequest !== requestIdRef.current) return;
+
       const msgList = rootData.threadSnippet?.length > 1
         ? rootData.threadSnippet
         : thread.messages || [];
 
-      // Build enriched message list
       const enriched = msgList.map((m) => {
         const cached = bodyCache.current.get(m.hash);
         return {
@@ -46,7 +50,10 @@ export function useThreadMessages(listId) {
         )
       );
 
-      // Update state with fetched bodies
+      // Stale check again before updating state
+      if (thisRequest !== requestIdRef.current) return;
+
+      // Single update with all fetched bodies
       setThreadMessages((prev) =>
         prev.map((m) => {
           const cached = bodyCache.current.get(m.hash);
@@ -55,15 +62,15 @@ export function useThreadMessages(listId) {
         })
       );
     } catch (err) {
+      if (thisRequest !== requestIdRef.current) return;
       console.error("Failed to load thread:", err);
     } finally {
-      setLoading(false);
+      if (thisRequest === requestIdRef.current) setLoading(false);
     }
   }, [listId]);
 
   const loadMessageBody = useCallback(async (hash) => {
     if (bodyCache.current.has(hash)) {
-      // Already cached, just update state
       setThreadMessages((prev) =>
         prev.map((m) => {
           if (m.hash !== hash) return m;

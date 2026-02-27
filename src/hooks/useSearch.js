@@ -6,6 +6,7 @@ export function useSearch(listId) {
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState("");
   const timerRef = useRef(null);
+  const abortRef = useRef(null);
 
   const search = useCallback((q) => {
     setQuery(q);
@@ -18,16 +19,23 @@ export function useSearch(listId) {
 
     setSearching(true);
     timerRef.current = setTimeout(async () => {
+      // Abort previous in-flight search
+      if (abortRef.current) abortRef.current.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
       try {
         const res = await fetch(
-          `/api/search?list=${listId}&q=${encodeURIComponent(q)}`
+          `/api/search?list=${listId}&q=${encodeURIComponent(q)}`,
+          { signal: controller.signal }
         );
         const data = await res.json();
         setResults(data.results || []);
-      } catch {
+      } catch (err) {
+        if (err.name === "AbortError") return;
         setResults([]);
       } finally {
-        setSearching(false);
+        if (!controller.signal.aborted) setSearching(false);
       }
     }, 400);
   }, [listId]);
