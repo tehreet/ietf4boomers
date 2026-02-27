@@ -82,24 +82,34 @@ export async function GET(request, { params }) {
   try {
     const qdrParam = qdr ? `&qdr=${qdr}` : "";
 
-    // Fetch 2 pages in parallel for more threads
-    const [page1Res, page2Res] = await Promise.allSettled([
+    // Fetch both views in parallel:
+    // - Chronological (no gbt): 2 pages for the very latest messages
+    // - Grouped by thread (gbt=1): 3 pages for broader thread discovery
+    // This avoids gbt's problem where one huge thread fills a whole page
+    // and pushes recent threads to later pages.
+    const fetches = await Promise.allSettled([
+      ietfFetch(`/arch/browse/${listId}/${qdrParam ? "?" + qdrParam.slice(1) : ""}`),
+      ietfFetch(`/arch/browse/${listId}/?page=2${qdrParam}`),
       ietfFetch(`/arch/browse/${listId}/?gbt=1${qdrParam}`),
       ietfFetch(`/arch/browse/${listId}/?gbt=1${qdrParam}&page=2`),
+      ietfFetch(`/arch/browse/${listId}/?gbt=1${qdrParam}&page=3`),
     ]);
 
+    // Deduplicate messages by hash across all pages
+    const seenHashes = new Set();
     let allMessages = [];
 
-    if (page1Res.status === "fulfilled") {
-      const html = await page1Res.value.text();
-      const $ = cheerio.load(html);
-      allMessages.push(...parseMessageRows($));
-    }
-
-    if (page2Res.status === "fulfilled") {
-      const html = await page2Res.value.text();
-      const $ = cheerio.load(html);
-      allMessages.push(...parseMessageRows($));
+    for (const result of fetches) {
+      if (result.status === "fulfilled") {
+        const html = await result.value.text();
+        const $ = cheerio.load(html);
+        for (const msg of parseMessageRows($)) {
+          if (msg.hash && !seenHashes.has(msg.hash)) {
+            seenHashes.add(msg.hash);
+            allMessages.push(msg);
+          }
+        }
+      }
     }
 
     if (allMessages.length === 0) {
@@ -107,7 +117,7 @@ export async function GET(request, { params }) {
     }
 
     const threads = groupIntoThreads(allMessages, listId);
-    const result = { threads, hasMore: page2Res.status === "fulfilled" };
+    const result = { threads, hasMore: true };
 
     setCached(cacheKey, result, CACHE_TTL);
     return NextResponse.json(result);

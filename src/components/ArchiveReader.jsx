@@ -10,10 +10,20 @@ import { ListSkeleton, ThreadSkeleton, MessageSkeleton } from "./LoadingStates";
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function formatDate(d) {
-  const date = typeof d === "string" ? new Date(d) : d;
+  if (!d) return "";
+  // Date-only strings ("2026-02-26") are parsed as UTC midnight by Date(),
+  // causing off-by-one in western timezones. Treat as local noon instead.
+  let date;
+  if (typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+    const [y, m, day] = d.split("-");
+    date = new Date(+y, +m - 1, +day, 12, 0, 0);
+  } else {
+    date = typeof d === "string" ? new Date(d) : d;
+  }
   if (isNaN(date)) return d || "";
   const now = new Date();
   const diff = now - date;
+  if (diff < 0) return "just now";
   const mins = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
