@@ -563,6 +563,29 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 }
 .msg-toggle:hover { color: var(--accent); }
 
+.thread-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  margin: 4px 0;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.thread-divider:hover {
+  background: var(--bg-hover);
+  color: var(--accent);
+}
+.thread-divider:active {
+  background: var(--bg-active);
+}
+
 /* ── Keyboard Shortcuts Modal ────────────── */
 .kbd-overlay {
   position: fixed;

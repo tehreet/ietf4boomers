@@ -1,6 +1,11 @@
 "use client";
 import { useState, useCallback, useRef } from "react";
 
+const BATCH_SIZE = 5;
+const COLLAPSE_THRESHOLD = 15;
+const HEAD_COUNT = 3;
+const TAIL_COUNT = 5;
+
 export function useThreadMessages(listId) {
   const [threadMessages, setThreadMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -8,7 +13,6 @@ export function useThreadMessages(listId) {
   const requestIdRef = useRef(0);
 
   const loadThread = useCallback(async (thread) => {
-    // Increment request ID to guard against stale completions
     const thisRequest = ++requestIdRef.current;
 
     setLoading(true);
@@ -20,7 +24,6 @@ export function useThreadMessages(listId) {
       const rootData = await rootRes.json();
       bodyCache.current.set(rootHash, rootData);
 
-      // Stale check: a newer loadThread was called
       if (thisRequest !== requestIdRef.current) return;
 
       const msgList = rootData.threadSnippet?.length > 1
@@ -40,20 +43,72 @@ export function useThreadMessages(listId) {
 
       setThreadMessages(enriched);
 
-      // Eagerly fetch first 5 non-root message bodies
-      const toFetch = enriched.filter((m) => !m.body && m.hash !== rootHash).slice(0, 5);
+      // For large threads, only eagerly fetch bodies for the head + tail
+      // (which are the only messages initially rendered).
+      // For small threads, fetch all.
+      let toFetch;
+      if (enriched.length > COLLAPSE_THRESHOLD) {
+        const visibleSet = new Set();
+        for (let i = 0; i < Math.min(HEAD_COUNT, enriched.length); i++) {
+          visibleSet.add(enriched[i].hash);
+        }
+        for (let i = Math.max(0, enriched.length - TAIL_COUNT); i < enriched.length; i++) {
+          visibleSet.add(enriched[i].hash);
+        }
+        toFetch = enriched.filter((m) => !m.body && visibleSet.has(m.hash));
+      } else {
+        toFetch = enriched.filter((m) => !m.body && m.hash !== rootHash);
+      }
+
+      for (let i = 0; i < toFetch.length; i += BATCH_SIZE) {
+        if (thisRequest !== requestIdRef.current) return;
+
+        const batch = toFetch.slice(i, i + BATCH_SIZE);
+        await Promise.allSettled(
+          batch.map((m) =>
+            fetch(`/api/messages/${listId}/${m.hash}`)
+              .then((r) => r.json())
+              .then((d) => { bodyCache.current.set(m.hash, d); })
+          )
+        );
+
+        if (thisRequest !== requestIdRef.current) return;
+
+        setThreadMessages((prev) =>
+          prev.map((m) => {
+            const cached = bodyCache.current.get(m.hash);
+            if (!cached) return m;
+            return { ...m, body: cached.body, from: cached.from || m.from, date: cached.date || m.date };
+          })
+        );
+      }
+    } catch (err) {
+      if (thisRequest !== requestIdRef.current) return;
+      console.error("Failed to load thread:", err);
+    } finally {
+      if (thisRequest === requestIdRef.current) setLoading(false);
+    }
+  }, [listId]);
+
+  // Batch-load bodies for a set of message hashes (used when expanding all)
+  const loadBodies = useCallback(async (hashes) => {
+    const thisRequest = requestIdRef.current;
+    const toFetch = hashes.filter((h) => !bodyCache.current.has(h));
+
+    for (let i = 0; i < toFetch.length; i += BATCH_SIZE) {
+      if (requestIdRef.current !== thisRequest) return;
+
+      const batch = toFetch.slice(i, i + BATCH_SIZE);
       await Promise.allSettled(
-        toFetch.map((m) =>
-          fetch(`/api/messages/${listId}/${m.hash}`)
+        batch.map((h) =>
+          fetch(`/api/messages/${listId}/${h}`)
             .then((r) => r.json())
-            .then((d) => { bodyCache.current.set(m.hash, d); })
+            .then((d) => { bodyCache.current.set(h, d); })
         )
       );
 
-      // Stale check again before updating state
-      if (thisRequest !== requestIdRef.current) return;
+      if (requestIdRef.current !== thisRequest) return;
 
-      // Single update with all fetched bodies
       setThreadMessages((prev) =>
         prev.map((m) => {
           const cached = bodyCache.current.get(m.hash);
@@ -61,11 +116,6 @@ export function useThreadMessages(listId) {
           return { ...m, body: cached.body, from: cached.from || m.from, date: cached.date || m.date };
         })
       );
-    } catch (err) {
-      if (thisRequest !== requestIdRef.current) return;
-      console.error("Failed to load thread:", err);
-    } finally {
-      if (thisRequest === requestIdRef.current) setLoading(false);
     }
   }, [listId]);
 
@@ -98,5 +148,5 @@ export function useThreadMessages(listId) {
     setThreadMessages([]);
   }, []);
 
-  return { threadMessages, loading, loadThread, loadMessageBody, clearMessages };
+  return { threadMessages, loading, loadThread, loadMessageBody, loadBodies, clearMessages };
 }

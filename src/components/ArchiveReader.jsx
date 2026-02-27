@@ -116,7 +116,7 @@ export default function ArchiveReader() {
   const { lists, areas, loading: listsLoading, error: listsError } = useLists();
   const [selectedList, setSelectedListRaw] = useState(searchParams.get("list") || "tls");
   const { threads, loading: threadsLoading, error: threadsError, refetch: refetchThreads } = useThreads(selectedList);
-  const { threadMessages, loading: messagesLoading, loadThread, loadMessageBody, clearMessages } = useThreadMessages(selectedList);
+  const { threadMessages, loading: messagesLoading, loadThread, loadMessageBody, loadBodies, clearMessages } = useThreadMessages(selectedList);
   const { results: searchResults, searching, query: searchQuery, search: doSearch, clearSearch } = useSearch(selectedList);
 
   const [selectedThreadId, setSelectedThreadId] = useState(searchParams.get("thread") || null);
@@ -125,6 +125,7 @@ export default function ArchiveReader() {
   const [threadFilter, setThreadFilter] = useState("recent");
   const [showKbd, setShowKbd] = useState(false);
   const [collapsedMsgs, setCollapsedMsgs] = useState(new Set());
+  const [showAllMessages, setShowAllMessages] = useState(false);
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [mobileView, setMobileView] = useState("threads");
 
@@ -169,6 +170,7 @@ export default function ArchiveReader() {
   const selectThread = useCallback((threadId) => {
     setSelectedThreadId(threadId);
     setCollapsedMsgs(new Set());
+    setShowAllMessages(false);
     setMobileView("messages");
     router.replace(`/?list=${selectedList}&thread=${threadId}`, { scroll: false });
   }, [router, selectedList]);
@@ -279,7 +281,32 @@ export default function ArchiveReader() {
   const currentList = lists.find((l) => l.id === selectedList);
 
   // Messages to render — from threadMessages hook or fallback to selectedThread.messages
-  const displayMessages = threadMessages.length > 0 ? threadMessages : (selectedThread?.messages || []);
+  const allMessages = threadMessages.length > 0 ? threadMessages : (selectedThread?.messages || []);
+
+  const THREAD_HEAD = 3;
+  const THREAD_TAIL = 5;
+  const isLargeThread = allMessages.length > 15;
+  const hiddenCount = isLargeThread && !showAllMessages
+    ? allMessages.length - THREAD_HEAD - THREAD_TAIL
+    : 0;
+
+  const displayMessages = useMemo(() => {
+    if (!isLargeThread || showAllMessages) return allMessages;
+    return [
+      ...allMessages.slice(0, THREAD_HEAD),
+      { _divider: true, count: allMessages.length - THREAD_HEAD - THREAD_TAIL },
+      ...allMessages.slice(-THREAD_TAIL),
+    ];
+  }, [allMessages, isLargeThread, showAllMessages]);
+
+  const handleShowAll = useCallback(() => {
+    setShowAllMessages(true);
+    const middleHashes = allMessages
+      .slice(THREAD_HEAD, -THREAD_TAIL)
+      .map((m) => m.hash)
+      .filter(Boolean);
+    loadBodies(middleHashes);
+  }, [allMessages, loadBodies]);
 
   return (
     <div className="app">
@@ -511,7 +538,7 @@ export default function ArchiveReader() {
                 <span className="message-header-list">
                   {selectedList.toUpperCase()}
                 </span>
-                <span>{displayMessages.length} messages in thread</span>
+                <span>{allMessages.length} messages in thread</span>
                 <span>·</span>
                 <span>
                   {formatDate(selectedThread.date)} —{" "}
@@ -533,6 +560,18 @@ export default function ArchiveReader() {
                 <MessageSkeleton />
               ) : (
                 displayMessages.map((msg, i) => {
+                  if (msg._divider) {
+                    return (
+                      <button
+                        key="divider"
+                        className="thread-divider"
+                        onClick={handleShowAll}
+                      >
+                        Show {msg.count} earlier messages
+                      </button>
+                    );
+                  }
+
                   const msgId = msg.hash || msg.id;
                   const isCollapsed = collapsedMsgs.has(msgId);
                   const depth = msg.depth || 0;
