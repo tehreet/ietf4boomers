@@ -24,6 +24,7 @@
   --avatar-text: #FFFFFF;
   --radius: 8px;
   --radius-sm: 5px;
+  --radius-lg: 12px;
   --transition: 0.15s ease;
 }
 
@@ -161,12 +162,12 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 
 .area-chip {
   padding: 6px 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   font-size: 11px;
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
-  transition: all var(--transition);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
   background: var(--bg-tertiary);
   color: var(--text-secondary);
   border: 1px solid transparent;
@@ -189,11 +190,13 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   padding: 10px 12px;
   border-radius: var(--radius);
   cursor: pointer;
-  transition: all var(--transition);
+  transition: background var(--transition);
   margin-bottom: 1px;
+  text-align: left;
 }
 
 .list-item:hover { background: var(--bg-hover); }
@@ -292,11 +295,8 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all var(--transition);
-  background: transparent;
+  transition: background var(--transition), color var(--transition);
   color: var(--text-secondary);
-  border: none;
-  font-family: var(--font-sans, -apple-system, sans-serif);
 }
 
 .thread-filter-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
@@ -313,12 +313,14 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 .thread-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 .thread-item {
-  padding: 14px 14px;
+  padding: 14px;
+  width: 100%;
   border-radius: var(--radius);
   cursor: pointer;
-  transition: all var(--transition);
+  transition: background var(--transition), border-color var(--transition);
   margin-bottom: 2px;
   border-left: 3px solid transparent;
+  text-align: left;
 }
 
 .thread-item:hover { background: var(--bg-secondary); }
@@ -426,7 +428,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
   color: var(--accent);
   background: var(--accent-glow);
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .message-header-link {
@@ -562,7 +564,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 .kbd-modal {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 28px;
   width: 420px;
   max-height: 80vh;
@@ -605,7 +607,7 @@ html, body { height: 100%; background: var(--bg-deep); color: var(--text-primary
 kbd {
   background: var(--bg-tertiary);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   padding: 2px 8px;
   font-family: var(--font-mono, monospace);
   font-size: 11px;
@@ -639,6 +641,50 @@ kbd {
 @keyframes msgFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
+/* ── Shared patterns ────────────────────── */
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--text-secondary); }
+
+.sidebar-footer {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-footer-trigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.status-message {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+.kbd-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 /* ── Mobile sidebar toggle ────────────── */
 .mobile-bar {
   display: none;
@@ -650,8 +696,6 @@ kbd {
 }
 
 .mobile-bar button {
-  background: none;
-  border: none;
   color: var(--text-primary);
   cursor: pointer;
   padding: 4px;
@@ -664,6 +708,9 @@ kbd {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ── Responsive ────────────────────────── */

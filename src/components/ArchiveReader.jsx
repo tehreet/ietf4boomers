@@ -285,7 +285,7 @@ export default function ArchiveReader() {
               <button
                 onClick={() => setMobileSidebar(false)}
                 aria-label="Close sidebar"
-                style={{ color: "var(--text-tertiary)", cursor: "pointer", padding: 4 }}
+                className="icon-btn"
               >
                 <CloseIcon />
               </button>
@@ -323,7 +323,7 @@ export default function ArchiveReader() {
           {listsLoading ? (
             <ListSkeleton />
           ) : listsError ? (
-            <div style={{ padding: "20px 14px", textAlign: "center", color: "var(--text-tertiary)", fontSize: 13 }} role="status">
+            <div className="status-message" role="status">
               Failed to load lists.
             </div>
           ) : (
@@ -337,7 +337,6 @@ export default function ArchiveReader() {
                   setMobileSidebar(false);
                   setMobileView("threads");
                 }}
-                style={{ width: "100%", textAlign: "left" }}
               >
                 <div
                   className="list-item-icon"
@@ -360,13 +359,10 @@ export default function ArchiveReader() {
           )}
         </div>
 
-        <div style={{ padding: "10px 14px", borderTop: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: 8 }}>
+        <div className="sidebar-footer">
           <button
             ref={kbdTriggerRef}
-            style={{
-              flex: 1, display: "flex", alignItems: "center", gap: 8,
-              color: "var(--text-tertiary)", fontSize: 11, cursor: "pointer",
-            }}
+            className="sidebar-footer-trigger"
             onClick={() => setShowKbd(true)}
           >
             <KbdIcon />
@@ -376,11 +372,7 @@ export default function ArchiveReader() {
           <button
             onClick={toggleTheme}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              padding: 6, color: "var(--text-tertiary)", cursor: "pointer",
-              borderRadius: "var(--radius-sm)",
-            }}
+            className="icon-btn"
           >
             {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
@@ -436,7 +428,7 @@ export default function ArchiveReader() {
           {threadsLoading || searching ? (
             <ThreadSkeleton />
           ) : threadsError && !searchQuery ? (
-            <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--text-tertiary)", fontSize: 13 }} role="status">
+            <div className="status-message" role="status">
               Failed to load threads.{" "}
               <button
                 onClick={() => refetchThreads()}
@@ -446,7 +438,7 @@ export default function ArchiveReader() {
               </button>
             </div>
           ) : displayThreads.length === 0 ? (
-            <div style={{ padding: "40px 20px", textAlign: "center", color: "var(--text-tertiary)", fontSize: 13 }} role="status">
+            <div className="status-message" role="status">
               {searchQuery ? "No results found" : "No threads found"}
             </div>
           ) : (
@@ -455,7 +447,6 @@ export default function ArchiveReader() {
                 key={thread.id}
                 className={`thread-item ${selectedThreadId === thread.id ? "active" : ""} ${thread.hot ? "hot" : ""}`}
                 onClick={() => selectThread(thread.id)}
-                style={{ width: "100%", textAlign: "left" }}
               >
                 <div className="thread-item-subject">{thread.subject}</div>
                 <div className="thread-item-meta">
@@ -504,7 +495,7 @@ export default function ArchiveReader() {
               <button onClick={() => { setSelectedThreadId(null); setMobileView("threads"); router.replace(`/?list=${selectedList}`, { scroll: false }); }}>
                 <BackIcon />
               </button>
-              <span className="mobile-bar-title" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <span className="mobile-bar-title">
                 {selectedThread.subject}
               </span>
             </div>
@@ -618,13 +609,13 @@ export default function ArchiveReader() {
             aria-labelledby="kbd-title"
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h3 id="kbd-title" style={{ margin: 0 }}>Keyboard Shortcuts</h3>
+            <div className="kbd-header">
+              <h3 id="kbd-title">Keyboard Shortcuts</h3>
               <button
                 ref={kbdCloseRef}
                 aria-label="Close"
                 onClick={() => setShowKbd(false)}
-                style={{ cursor: "pointer", color: "var(--text-tertiary)" }}
+                className="icon-btn"
               >
                 <CloseIcon />
               </button>
