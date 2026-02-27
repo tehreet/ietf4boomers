@@ -1,30 +1,56 @@
-:root {
-  --bg-deep: #0C0E13;
-  --bg-primary: #12151C;
-  --bg-secondary: #181C26;
-  --bg-tertiary: #1E2330;
-  --bg-hover: #242938;
-  --bg-active: #2A3040;
-  --border: #2A2F3C;
-  --border-subtle: #1F2430;
-  --text-primary: #E8ECF4;
-  --text-secondary: #8B95A8;
-  --text-tertiary: #7B8698;
-  --accent: #6C9EFF;
-  --accent-dim: #4A7AE0;
-  --accent-glow: rgba(108, 158, 255, 0.08);
-  --hot: #FF6B4A;
-  --hot-dim: rgba(255, 107, 74, 0.12);
-  --success: #4ADE80;
-  --warning: #FBBF24;
-  --depth-1: #4A7AE0;
-  --depth-2: #7B61FF;
-  --depth-3: #E84FA8;
-  --depth-4: #4FE89C;
+:root, [data-theme="light"] {
+  --bg-deep: #F2EDE7;
+  --bg-primary: #FDFBF8;
+  --bg-secondary: #F5F0EA;
+  --bg-tertiary: #EBE5DD;
+  --bg-hover: #E4DDD4;
+  --bg-active: #DAD2C8;
+  --border: #DDD6CC;
+  --border-subtle: #EBE5DD;
+  --text-primary: #2C2825;
+  --text-secondary: #5E5852;
+  --text-tertiary: #736C64;
+  --accent: #18736A;
+  --accent-dim: #14635B;
+  --accent-glow: rgba(24, 115, 106, 0.08);
+  --hot: #C4532A;
+  --hot-dim: rgba(196, 83, 42, 0.08);
+  --success: #2D8B57;
+  --warning: #B8860B;
+  --depth-1: #2B8A7E;
+  --depth-2: #6B6ABF;
+  --depth-3: #C4654A;
+  --depth-4: #3A8F55;
   --avatar-text: #FFFFFF;
   --radius: 8px;
   --radius-sm: 5px;
   --transition: 0.15s ease;
+}
+
+[data-theme="dark"] {
+  --bg-deep: #141618;
+  --bg-primary: #1C1F24;
+  --bg-secondary: #252930;
+  --bg-tertiary: #2E333C;
+  --bg-hover: #373D48;
+  --bg-active: #404754;
+  --border: #373D48;
+  --border-subtle: #2E333C;
+  --text-primary: #ECE8E2;
+  --text-secondary: #A8A099;
+  --text-tertiary: #928A82;
+  --accent: #4FB8AD;
+  --accent-dim: #3A9E93;
+  --accent-glow: rgba(79, 184, 173, 0.10);
+  --hot: #FF7A55;
+  --hot-dim: rgba(255, 122, 85, 0.10);
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --depth-1: #4FB8AD;
+  --depth-2: #8B8AE0;
+  --depth-3: #E87A5A;
+  --depth-4: #5EC87A;
+  --avatar-text: #FFFFFF;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -589,7 +615,7 @@ kbd {
 
 .msg-count-badge {
   background: var(--accent);
-  color: var(--bg-deep);
+  color: var(--avatar-text);
   font-family: var(--font-mono, monospace);
   font-size: 10px;
   font-weight: 600;

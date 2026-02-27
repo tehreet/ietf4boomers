@@ -31,10 +31,15 @@ export const metadata = {
   },
 };
 
+const themeScript = `(function(){var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t)})()`;
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${ibmPlexMono.variable} ${sourceSerif.variable} ${dmSans.variable}`}>
-      <body>{children}</body>
+    <html lang="en" className={`${ibmPlexMono.variable} ${sourceSerif.variable} ${dmSans.variable}`} suppressHydrationWarning>
+      <body>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {children}
+      </body>
     </html>
   );
 }

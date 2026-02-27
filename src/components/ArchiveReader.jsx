@@ -90,6 +90,12 @@ const MenuIcon = () => (
 const BackIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
 );
+const SunIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>
+);
+const MoonIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+);
 
 // ── Main Component ────────────────────────────────────────────────────────
 export default function ArchiveReader() {
@@ -112,8 +118,20 @@ export default function ArchiveReader() {
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [mobileView, setMobileView] = useState("threads");
 
+  const [theme, setTheme] = useState("light");
   const kbdCloseRef = useRef(null);
   const kbdTriggerRef = useRef(null);
+
+  useEffect(() => {
+    setTheme(document.documentElement.getAttribute("data-theme") || "light");
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+  }, [theme]);
 
   // Derive selectedThread from threads
   const selectedThread = useMemo(
@@ -342,19 +360,30 @@ export default function ArchiveReader() {
           )}
         </div>
 
-        <div style={{ padding: "12px 14px", borderTop: "1px solid var(--border-subtle)" }}>
+        <div style={{ padding: "10px 14px", borderTop: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: 8 }}>
           <button
             ref={kbdTriggerRef}
             style={{
-              display: "flex", alignItems: "center", gap: 8, width: "100%",
+              flex: 1, display: "flex", alignItems: "center", gap: 8,
               color: "var(--text-tertiary)", fontSize: 11, cursor: "pointer",
               background: "none", border: "none",
             }}
             onClick={() => setShowKbd(true)}
           >
             <KbdIcon />
-            <span>Keyboard shortcuts</span>
+            <span>Shortcuts</span>
             <kbd style={{ marginLeft: "auto" }}>?</kbd>
+          </button>
+          <button
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              padding: 6, color: "var(--text-tertiary)", cursor: "pointer",
+              background: "none", border: "none", borderRadius: "var(--radius-sm)",
+            }}
+          >
+            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
         </div>
       </aside>

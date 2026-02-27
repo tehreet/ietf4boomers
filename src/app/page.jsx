@@ -3,7 +3,7 @@ import ArchiveReader from "@/components/ArchiveReader";
 
 export default function Home() {
   return (
-    <Suspense fallback={<div style={{ background: "#0C0E13", height: "100vh" }} />}>
+    <Suspense fallback={<div style={{ background: "var(--bg-deep)", height: "100vh" }} />}>
       <ArchiveReader />
     </Suspense>
   );
